@@ -1,0 +1,28 @@
+#!/bin/sh
+
+set -e
+
+DEB_HOST_MULTIARCH=$(dpkg-architecture -qDEB_HOST_MULTIARCH)
+
+
+"/usr/libexec/$DEB_HOST_MULTIARCH/isa-support/qemu-static-good-x86-64-v1" "/usr/libexec/$DEB_HOST_MULTIARCH/isa-support/test-x86-64-v1"
+# trap signal to self
+trap "exit 0" ILL
+trap "exit 0" SEGV
+trap "exit 0" BUS
+
+
+sed_move_to_stderr() {
+    sed  -e "/$1/w /dev/stderr" -e "/$1/d"
+}
+
+qemu_bad() {
+    "/usr/libexec/$DEB_HOST_MULTIARCH/isa-support/qemu-static-bad-x86-64-v1" "/usr/libexec/$DEB_HOST_MULTIARCH/isa-support/test-x86-64-v1" || true
+}
+
+exec 5>&1
+exec 3>&1
+error_qemu=$( ( ( (qemu_bad) 2>&1 >&3 3>&- ; echo $? >&4)  | sed_move_to_stderr 'uncaught target signal' 2>&1 >&3 3>&- ) 4>&1 >&5)
+exec 3>&-
+exec 5>&-
+test "X$error_qemu" = "X0"

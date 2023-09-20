@@ -1,0 +1,29 @@
+#!/bin/sh
+
+set -eu
+
+outdir="$1"
+
+mkdir -p "$outdir"
+
+isas=$(cat isa-list | grep ^Name | cut -d " " -f2)
+
+for po in debian/po/*.po ; do
+	po2="$outdir/$(basename "$po")"
+	truncate -s0 "$po2"
+
+	echo "Extending $po: s/&NAME&/\$isa > $po2"
+	csplit --quiet --suppress-matched -f "$po2." -b '%02d.sect' "$po" '/^$/' '{*}'
+	for sect in $(ls -1 $po2*.sect | sort -n) ; do
+		if grep -q '@NAME@' $sect ; then
+			for isa in $isas ; do
+				cat $sect | sed -e "s/@NAME@/$isa/g" >> "$po2"
+				echo >> "$po2"
+			done
+		else
+			cat $sect >> "$po2"
+			echo >> "$po2"
+		fi
+		rm $sect
+	done
+done

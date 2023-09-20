@@ -1,0 +1,2 @@
+# debconf is optional, for nicer fail messages
+@LCNAME@-support: missing-debconf-dependency-for-preinst

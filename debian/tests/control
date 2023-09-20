@@ -1,0 +1,32 @@
+Tests: test-i386-baseline
+Depends: isa-support, qemu-user-static (>>1:7.2~), build-essential
+Architecture: any-i386
+
+Tests: test-SSE2
+Depends: isa-support, qemu-user-static (>>1:7.2~), build-essential
+Architecture: any-i386
+
+Tests: test-amd64-baseline
+Depends: isa-support, qemu-user-static (>>1:7.2~), build-essential
+Architecture: any-i386 any-amd64
+
+Tests: test-x86-64-v1
+Depends: isa-support, qemu-user-static (>>1:7.2~), build-essential
+Architecture: any-i386
+
+Tests: test-x86-64-v2
+Depends: isa-support, qemu-user-static (>>1:7.2~), build-essential
+Architecture: any-i386 any-amd64
+
+Tests: test-SSE3
+Depends: isa-support, qemu-user-static (>>1:7.2~), build-essential
+Architecture: any-i386 any-amd64
+
+Tests: test-SSE4.1
+Depends: isa-support, qemu-user-static (>>1:7.2~), build-essential
+Architecture: any-i386 any-amd64
+
+Tests: test-SSE4.2
+Depends: isa-support, qemu-user-static (>>1:7.2~), build-essential
+Architecture: any-i386 any-amd64
+

@@ -1,0 +1,42 @@
+# Dutch translation of isa-support debconf templates.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the isa-support package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Frans Spiesschaert <Frans.Spiesschaert@yucom.be>, 2017.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: isa-support_1\n"
+"Report-Msgid-Bugs-To: isa-support@packages.debian.org\n"
+"POT-Creation-Date: 2022-08-17 11:25+0000\n"
+"PO-Revision-Date: 2017-08-10 21:18+0200\n"
+"Last-Translator: Frans Spiesschaert <Frans.Spiesschaert@yucom.be>\n"
+"Language-Team: Debian Dutch l10n Team <debian-l10n-dutch@lists.debian.org>\n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Gtranslator 2.91.7\n"
+
+#. Type: note
+#. Description
+#: ../@NAME@-support.templates.in:1001
+msgid "Support for @NAME@ required"
+msgstr "Ondersteuning voor @NAME@ is vereist"
+
+#. Type: note
+#. Description
+#: ../@NAME@-support.templates.in:1001
+msgid ""
+"Alas, your machine doesn't support the @NAME@ instruction set.  It is needed "
+"by software that depends on this dummy package.  Sorry."
+msgstr ""
+"Helaas ondersteunt uw machine de @NAME@ instructieset niet. Software die dit "
+"dummy-pakket als vereiste heeft, heeft die nodig. sorry."
+
+#. Type: note
+#. Description
+#: ../@NAME@-support.templates.in:1001
+msgid "Aborting installation."
+msgstr "De installatie wordt afgebroken."

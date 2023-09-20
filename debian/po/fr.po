@@ -1,0 +1,39 @@
+# Translation of isa-support debconf templates to French.
+# Copyright (C) 2017 Debian French l10n team <debian-l10n-french@lists.debian.org>
+# This file is distributed under the same license as the isa-support package.
+# Jean-Pierre Giraud <jean-pierregiraud@neuf.fr>, 2017.
+msgid ""
+msgstr ""
+"Project-Id-Version: isa-support\n"
+"Report-Msgid-Bugs-To: isa-support@packages.debian.org\n"
+"POT-Creation-Date: 2022-08-17 11:25+0000\n"
+"PO-Revision-Date: 2017-08-17 22:49+0200\n"
+"Last-Translator: Jean-Pierre Giraud <jean-pierregiraud@neuf.fr>\n"
+"Language-Team: French <debian-l10n-french@lists.debian.org>\n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.11\n"
+
+#. Type: note
+#. Description
+#: ../@NAME@-support.templates.in:1001
+msgid "Support for @NAME@ required"
+msgstr "La prise en charge de @NAME@ est requise"
+
+#. Type: note
+#. Description
+#: ../@NAME@-support.templates.in:1001
+msgid ""
+"Alas, your machine doesn't support the @NAME@ instruction set.  It is needed "
+"by software that depends on this dummy package.  Sorry."
+msgstr ""
+"Malheureusement, votre machine ne gère pas le jeu d'instructions @NAME@. Il "
+"est nécessaire au logiciel qui dépend de ce paquet factice."
+
+#. Type: note
+#. Description
+#: ../@NAME@-support.templates.in:1001
+msgid "Aborting installation."
+msgstr "Installation interrompue."

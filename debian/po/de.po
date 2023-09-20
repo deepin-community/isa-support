@@ -1,0 +1,40 @@
+# German debconf translation of the isa-support package.
+# Copyright (C) 2016 Adam Borowski <kilobyte@angband.pl>.
+# This file is distributed under the same license as the isa-support package.
+# Copyright of this file © 2017 Chris Leick <c.leick@vollbio.de>.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: isa-support 4.0.0\n"
+"Report-Msgid-Bugs-To: isa-support@packages.debian.org\n"
+"POT-Creation-Date: 2022-08-17 11:25+0000\n"
+"PO-Revision-Date: 2017-08-25 19:10+0100\n"
+"Last-Translator: Chris Leick <c.leick@vollbio.de>\n"
+"Language-Team: German <debian-l10n-german@lists.debian.org>\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. Type: note
+#. Description
+#: ../@NAME@-support.templates.in:1001
+msgid "Support for @NAME@ required"
+msgstr "Unterstützung für @NAME@ erforderlich"
+
+#. Type: note
+#. Description
+#: ../@NAME@-support.templates.in:1001
+msgid ""
+"Alas, your machine doesn't support the @NAME@ instruction set.  It is needed "
+"by software that depends on this dummy package.  Sorry."
+msgstr ""
+"Leider unterstützt Ihre Maschine nicht den Befehlssatz @NAME@. Er wird von "
+"Software benötigt, die von diesem Pseudopaket abhängt. Entschuldigung."
+
+#. Type: note
+#. Description
+#: ../@NAME@-support.templates.in:1001
+msgid "Aborting installation."
+msgstr "Die Installation wird abgebrochen."

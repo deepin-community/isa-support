@@ -1,0 +1,351 @@
+# Recognized fields:
+# "Name": the isa extension name, the package will be ${Name}-support
+# "Architecture": archs to build the package on, wildcards are ok
+# "Test": how to detect it, defaults to return !__builtin_cpu_supports("$Name");
+#     If the test program dies (SIGILL/etc), that's ok, the answer is "no".
+# CFLAGS: passed to the C compiler, can include link-time flags too.
+# Description: added to package's description.
+# qemu-good: qemu run ok
+# qemu-bad: qemu not ok
+# package: yes/no add a package for this test. Default no
+# priority: higher are tested first
+
+Name: i386-baseline
+Architecture: any-i386
+Package: no
+Priority: -1
+Test: return !(
+ __builtin_cpu_supports("cmov") &&
+ CPU_FEATURE_ACTIVE(CX8)
+ );
+qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu pentium',+cmov,+cx8'
+qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu pentium',-cmov,-cx8'
+Description:
+ This is the Micro-Architecture Levels baseline for debian under i386 architecture, corresponding
+ to i686 CPU.
+ .
+ This includes:
+ - cmov instruction (CMOV instruction set),
+ - cmpxchg8b ant other 64 bits atomics instruction (CX8 instruction set).
+
+Name: SSE2
+Architecture: any-i386
+qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu qemu"$DEB_HOST_ARCH_BITS"',+sse2'
+qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu qemu"$DEB_HOST_ARCH_BITS"',-see2,-sse3,-ssse3,-sse4.1,-sse4.2'
+Priority: 500
+Package: yes
+Description:
+ Streaming SIMD Extensions (SSE) is a single instruction, multiple data
+ (SIMD) instruction set extension.
+ .
+ SSE2 was an incremental upgrade to SSE intended to fully replace the earlier
+ MMX instruction set. It is available on processors from Pentium 4 onward,
+ including all 64-bit capable ones, but not on Pentium 3, Athlon XP, Via C3,
+ Quark, or older processors.
+
+Name: amd64-baseline
+Architecture: any-i386 any-amd64
+Package: no
+Priority: -1
+Test: return !(
+ __builtin_cpu_supports("cmov") && __builtin_cpu_supports("mmx") && __builtin_cpu_supports("sse") &&
+ __builtin_cpu_supports("sse2") &&
+ CPU_FEATURE_ACTIVE(CX8) && CPU_FEATURE_ACTIVE(FXSR)
+ );
+qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu qemu"$DEB_HOST_ARCH_BITS"',+cmov,+mmx,+sse,+sse2,+cx8,+fxsr'
+qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu qemu"$DEB_HOST_ARCH_BITS"',-sse,-sse2'
+Description:
+ This is the Micro-Architecture Levels baseline for debian under x86-64 architecture, corresponding
+ to x86-65 psABI v1.
+ .
+ This includes:
+ - cmov instruction (CMOV instruction set),
+ - cmpxchg8b ant other 64 bits atomics instruction (CX8 instruction set),
+ - MMX a single instruction, multiple data (SIMD) instruction set,
+ - streaming SIMD Extensions (SSE) set, a single instruction, multiple data
+   (SIMD) instruction set extension,
+ - SSE2 an incremental upgrade to SSE.
+ .
+ On ABIs other than the x86-64 psABI they select the same CPU features
+ as the x86-64 psABI documents for the particular micro-architecture level.
+
+Name: x86-64-v1
+Architecture: any-i386
+Package: no
+Priority: 1000
+Test: return !(
+ __builtin_cpu_supports("cmov") && __builtin_cpu_supports("mmx") && __builtin_cpu_supports("sse") &&
+ __builtin_cpu_supports("sse2") &&
+ CPU_FEATURE_ACTIVE(CX8) && CPU_FEATURE_ACTIVE(FXSR)
+ );
+qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu qemu"$DEB_HOST_ARCH_BITS"',+cmov,+mmx,+sse,+sse2,+cx8,+fxsr'
+qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu qemu"$DEB_HOST_ARCH_BITS"',-cmov,-mmx,-sse,-sse2,-cx8,-fxsr'
+Description:
+ This is the Micro-Architecture Levels baseline as defined by the amd64 ABI document.
+ This includes:
+ - cmov instruction (CMOV instruction set),
+ - cmpxchg8b ant other 64 bits atomics instruction (CX8 instruction set),
+ - MMX a single instruction, multiple data (SIMD) instruction set,
+ - streaming SIMD Extensions (SSE) set, a single instruction, multiple data
+   (SIMD) instruction set extension,
+ - SSE2 an incremental upgrade to SSE.
+ .
+ On ABIs other than the x86-64 psABI they select the same CPU features
+ as the x86-64 psABI documents for the particular micro-architecture level.
+
+Name: x86-64-v2
+Architecture: any-i386 any-amd64
+Package: no
+qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu qemu"$DEB_HOST_ARCH_BITS"'-v1,+cmov,+mmx,+sse,+sse2,+cx8,+fxsr,+cx16,+lahf-lm,+popcnt,+sse3,+sse4.1,+sse4.2,+ssse3'
+qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu qemu"$DEB_HOST_ARCH_BITS"'-v1,+cmov,+mmx,+sse,+sse2,+cx8,+fxsr,-cx16,-lahf-lm,-popcnt,-sse3,-sse4.1,-sse4.2,-ssse3'
+Priority: 2000
+Test: return !(
+ __builtin_cpu_supports("cmov") && __builtin_cpu_supports("mmx") && __builtin_cpu_supports("sse") &&
+ __builtin_cpu_supports("sse2") &&
+ CPU_FEATURE_ACTIVE(CX8) && CPU_FEATURE_ACTIVE(FXSR) &&
+ CPU_FEATURE_ACTIVE(CMPXCHG16B) && CPU_FEATURE_ACTIVE(LAHF64_SAHF64) &&
+ __builtin_cpu_supports("popcnt") && __builtin_cpu_supports("sse3") &&
+ __builtin_cpu_supports("sse4.1") && __builtin_cpu_supports("sse4.2") && __builtin_cpu_supports("ssse3")
+ );
+Description:
+ This is the Micro-Architecture Levels version 2 as defined by the amd64 ABI document.
+ This includes:
+ - cmov instruction (CMOV instruction set),
+ - cmpxchg8b ant other 64 bits atomics instruction (CX8 instruction set),
+ - MMX a single instruction, multiple data (SIMD) instruction set,
+ - streaming SIMD Extensions (SSE) set, a single instruction, multiple data
+   (SIMD) instruction set extension,
+ - SSE2 an incremental upgrade to SSE.
+ - cmpxchg16b ant other 128 bits atomics instruction (CX16 instruction set),
+ - SSE3, also called PNI (Prescott New Instructions), is an incremental upgrade
+   to SSE2
+ - SSE4.1 added a dot product instruction and additional integer instructions.
+ - SSE4.2 added string and text processing instructions that perform character
+   searches and comparison on two operands of 16 bytes at a time.
+ - SSSE3 or Supplemental Streaming SIMD Extension 3.
+ .
+ The corresponding micro-architecture level from the x86-64 psABI.
+ On ABIs other than the x86-64 psABI they select the same CPU features
+ as the x86-64 psABI documents for the particular micro-architecture level.
+
+Name: SSE3
+Architecture: any-i386 any-amd64
+qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu qemu"$DEB_HOST_ARCH_BITS"',+sse2,+sse3,+ssse3'
+qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu qemu"$DEB_HOST_ARCH_BITS"',+sse2,-sse3,-ssse3,-sse4.1,-sse4.2'
+Package: yes
+Priority: 700
+Description:
+ Streaming SIMD Extensions (SSE) is a single instruction, multiple data
+ (SIMD) instruction set extension.
+ .
+ SSE3, also called PNI (Prescott New Instructions), is an incremental upgrade
+ to SSE2, adding a handful of new operations useful for processing media. It
+ is available on almost any 64-bit-capable processor except for some early
+ AMD models (Sledgehammer and Clawhammer), but is not available on most
+ 32-bit-only hardware.
+
+Name: SSE4.1
+Architecture: any-i386 any-amd64
+qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu qemu"$DEB_HOST_ARCH_BITS"',+sse2,+sse3,+ssse3,+sse4.1'
+qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu qemu"$DEB_HOST_ARCH_BITS"',+sse2,+sse3,+ssse3,-sse4.1,-sse4.2'
+Package: yes
+Priority: 800
+Description:
+ Streaming SIMD Extensions (SSE) is a single instruction, multiple data
+ (SIMD) instruction set extension.
+ .
+ SSE4.1 added a dot product instruction and additional integer instructions.
+ It is available on Intel processors since Penryn (circa 2008), but notably
+ not on anything AMD until the Bulldozer (15h, in 2011) and Jaguar (16h, in
+ 2013) families.
+
+Name: SSE4.2
+Architecture: any-i386 any-amd64
+qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu "qemu$DEB_HOST_ARCH_BITS"',+sse2,+sse3,+ssse3,+sse4.1,+sse4.2'
+qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu "qemu$DEB_HOST_ARCH_BITS"',+sse2,+sse3,+ssse3,+sse4.1,-sse4.2'
+Package: yes
+Priority: 900
+Description:
+ SSE4.2 added string and text processing instructions that perform character
+ searches and comparison on two operands of 16 bytes at a time. It is
+ available on Intel processors since Nehalem (circa 2008), but notably not
+ on anything AMD until the Bulldozer (15h, in 2011) and Jaguar (16h, in
+ 2013) families.
+
+Name: x86-64-v3
+Architecture: any-i386 any-amd64
+Priority: 3000
+Package: no
+#qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu qemu"$DEB_HOST_ARCH_BITS"-v1',+cmov,+mmx,+sse,+sse2,+cx8,+fxsr,+cx16,+lahf-lm,+popcnt,+sse3,+sse4.1,+sse4.2,+ssse3,+avx,+avx2,+bmi1,+bmi2,+f16c,+fma,+abm'
+#qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu qemu"$DEB_HOST_ARCH_BITS"-v1',+cmov,+mmx,+sse,+sse2,+cx8,+fxsr,+cx16,+lahf-lm,+popcnt,+sse3,+sse4.1,+sse4.2,+ssse3,-avx,-avx2,-bmi1,-bmi2,-f16c,-fma,-abm'
+Test: return !(
+ __builtin_cpu_supports("cmov") && __builtin_cpu_supports("mmx") && __builtin_cpu_supports("sse") &&
+ __builtin_cpu_supports("sse2") &&
+ CPU_FEATURE_ACTIVE(CX8) && CPU_FEATURE_ACTIVE(FXSR) &&
+ CPU_FEATURE_ACTIVE(CMPXCHG16B) && CPU_FEATURE_ACTIVE(LAHF64_SAHF64) &&
+ __builtin_cpu_supports("popcnt") && __builtin_cpu_supports("sse3") &&
+ __builtin_cpu_supports("sse4.1") && __builtin_cpu_supports("sse4.2") && __builtin_cpu_supports("ssse3") &&
+ __builtin_cpu_supports("avx") && __builtin_cpu_supports("avx2") &&
+ __builtin_cpu_supports("bmi") && __builtin_cpu_supports("bmi2") &&
+ CPU_FEATURE_ACTIVE(F16C) &&
+ __builtin_cpu_supports("fma") &&
+ CPU_FEATURE_ACTIVE(LZCNT) && CPU_FEATURE_ACTIVE(OSXSAVE)
+ );
+Description:
+ This is the Micro-Architecture Levels version 3 as defined by the amd64 ABI document.
+ This includes:
+ - cmov instruction (CMOV instruction set),
+ - cmpxchg8b ant other 64 bits atomics instruction (CX8 instruction set),
+ - MMX a single instruction, multiple data (SIMD) instruction set,
+ - streaming SIMD Extensions (SSE) set, a single instruction, multiple data
+   (SIMD) instruction set extension,
+ - SSE2 an incremental upgrade to SSE.
+ - cmpxchg16b ant other 128 bits atomics instruction (CX16 instruction set),
+ - SSE3, also called PNI (Prescott New Instructions), is an incremental upgrade
+   to SSE2,
+ - SSE4.1 added a dot product instruction and additional integer instructions,
+ - SSE4.2 added string and text processing instructions that perform character
+   searches and comparison on two operands of 16 bytes at a time,
+ - SSSE3 or Supplemental Streaming SIMD Extension 3,
+ - Advanced Vector Extensions (AVX and AVX2)
+ - Bit manipulation instructions sets (BMI and BMI2),
+ - F16C instruction set converting between half-precision
+   and standard IEEE single-precision floating-point formats,
+ - LZCNT instruction, Count the Number of Leading Zero Bits,
+ - OSXSAVE, Save Processor Extended States instruction.
+ .
+ The corresponding micro-architecture level from the x86-64 psABI.
+ On ABIs other than the x86-64 psABI they select the same CPU features
+ as the x86-64 psABI documents for the particular micro-architecture level.
+
+
+Name: altivec
+Architecture: powerpc
+Test: asm volatile("vsldoi %v1,%v1,%v1,0");
+Package: yes
+Description:
+ AltiVec is a single-precision floating point and integer SIMD instruction
+ set. It is a standard part of the Power ISA v.2.03 specification.
+# gcc-16 has __builtin_cpu_supports("altivec") but it's not reliable: silently
+# gives wrong answer on qemu, wrong versions of glibc, non-glibc, etc.
+# Thus, let's use SIGILL instead.
+
+Name: neon
+Architecture: armhf
+CFLAGS: -mfpu=neon
+Test: asm volatile("VMUL.I16 q0,q0,q1");
+Package: yes
+Description:
+ This is a mostly dummy package which checks for Neon and refuses to install
+ on unsupported hardware.
+ .
+ Neon, also known as MPE (Media Processing Engine) or Advanced SIMD, is a
+ combined 64- and 128-bit SIMD instruction set that provides standardised
+ acceleration for media and signal processing applications. It is available
+ on the vast majority of armhf devices but not guaranteed before the 64-bit
+ capable ARMv8.
+
+Name: ARMv6
+Architecture: armel
+Test: return !need_armv_version(6);
+#qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu arm1026
+#qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu arm1136-r2
+Package: yes
+Priority: 6000
+Description:
+ The ARMv6 architecture (not to be confused with product family ARM6) uses
+ physically addressed cache, solving many cache aliasing problems and
+ reducing context switch overhead. Unaligned and mixed-endian data access is
+ supported. This architecture includes the first version of Thumb
+ technology.
+ .
+ This feature is not guaranteed by the architecture baseline, but is
+ available for newer armel machines in the ARM11 product family, including
+ ARM1136J(F)-S, ARM1156T2(F)-S, ARM1176JZ(F)-S, ARM1136EJ(F)-S, and
+ ARM11MPCore processors. Boards include the Raspberry Pi model 1 and
+ Raspberry Pi Zero.
+
+Name: ARMv6K
+Architecture: armel
+Priority: 6900
+Test: return !(need_armv_version(6) && (getauxval(AT_HWCAP) & HWCAP_ARM_TLS));
+#qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu arm1136
+#qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu arm1136-r2
+Package: yes
+Description:
+ ARMv6k is a subarchitecture of ARMV6 adding Symmetric MultiProcessing
+ and Thread Local Storage instruction sets. It is not guaranteed by the
+ architecture baseline, but is available for newer armel machines in the
+ ARM11 product family; boards include the Raspberry Pi model 1 and
+ Raspberry Pi Zero.
+
+Name: ARMv7
+Architecture: armel
+Test: return !need_armv_version(7);
+#qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu arm1136
+#qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu cortex-a7
+Priority: 7000
+Package: yes
+Description:
+ ARMv7 (not to be confused with product family ARM7) includes Thumb-2
+ technology, adding 32-bit instructions into compressed Thumb mode. It is
+ not guaranteed by the architecture baseline, but is available for newer
+ armel machines (including CPUs that support armhf) since the Cortex-A
+ product family, including Cortex-A5, -A7, -A8, -A9, -A12, -A15, and -A17
+ processors. Boards include the Raspberry Pi 2.
+
+Name: ARMv8
+Architecture: armel armhf
+Test: return !need_armv_version(8);
+Package: yes
+Priority: 8000
+Description:
+ ARMv8 (not to be confused with product family ARM8) introduced a large
+ number of ISA enhancements. It is not guaranteed by the architecture
+ baseline, but is available for newer armel machines (including CPUs that
+ support armhf) since the Cortex-A product family, including Cortex-A32, as
+ well as all arm64 processors. Boards include the Raspberry Pi 3 and 4.
+
+Name: VFP
+Architecture: armel
+Test: return !(getauxval(AT_HWCAP) & HWCAP_ARM_VFP)
+#qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu arm926
+#qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu arm1136
+Package: yes
+Description:
+ VFP (Vector Floating Point) technology is a floating-point unit (FPU)
+ coprocessor extension to the ARM architecture. It provides single- and
+ double-precision floating-point computation fully compliant with IEEE
+ 754-1985.
+
+Name: VFPv2
+Architecture: armel
+Test: return !(need_armv_version(5) && (getauxval(AT_HWCAP) & HWCAP_ARM_VFP))
+#qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu arm926
+#qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu arm1136
+Package: yes
+Description:
+ VFP (Vector Floating Point) technology is a floating-point unit (FPU)
+ coprocessor extension to the ARM architecture. It provides single- and
+ double-precision floating-point computation fully compliant with IEEE
+ 754-1985.
+ .
+ VFPv2 has 16 64-bit FPU registers. It is available for some ARMv5 and
+ all ARMv6 cores.
+
+Name: VFPv3
+Architecture: armel
+Test: return !(getauxval(AT_HWCAP) & HWCAP_ARM_VFPv3)
+#qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu arm1136
+#qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu cortex-a8
+Package: yes
+Description:
+ VFP (Vector Floating Point) technology is a floating-point unit (FPU)
+ coprocessor extension to the ARM architecture. It provides single- and
+ double-precision floating-point computation fully compliant with IEEE
+ 754-1985.
+ .
+ VFPv3 has 32 64-bit FPU registers as standard, adds VCVT instructions to
+ convert between scalar, float, and double, and adds immediate mode to VMOV,
+ allowing constants to be loaded into FPU registers. It is available on most
+ Cortex-A8 and -A9 ARMv7 processors.

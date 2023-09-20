@@ -1,0 +1,5 @@
+# debhelper wants to add bogus Depends on debconf.  Even if debconf's use
+# was unconditional, that'd be wrong as preinst needs Pre-Depends not Depends.
+# There's no risk of failing to grab a new dependency in the future as an
+# empty (save for preinst) package has no needs.
+isa-support source: debhelper-but-no-misc-depends

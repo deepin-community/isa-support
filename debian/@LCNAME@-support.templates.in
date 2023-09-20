@@ -1,0 +1,7 @@
+Template: @NAME@-support/fail
+Type: note
+_Description: Support for @NAME@ required
+ Alas, your machine doesn't support the @NAME@ instruction set.  It is
+ needed by software that depends on this dummy package.  Sorry.
+ .
+ Aborting installation.

@@ -1,0 +1,27 @@
+Source: isa-support
+Section: misc
+Priority: optional
+Maintainer: Bastien Roucariès <rouca@debian.org>
+Build-Depends: debhelper-compat (= 13), po-debconf
+Standards-Version: 4.6.1
+Rules-Requires-Root: no
+Vcs-Git: https://salsa.debian.org/debian/isa-support.git
+Vcs-Browser: https://salsa.debian.org/debian/isa-support
+
+Package: isa-support
+Multi-Arch: same
+Architecture: @ALL_ARCHITECTURES@
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: CPU feature checking - common back-end
+ The packages in the isa-support family probe for microprocessor Instruction
+ Set Architecture features such as SSE3. By refusing to install on machines
+ lacking a required feature, they allow ISA requirements to be handled in
+ terms of package dependencies.
+ .
+ This package provides the feature-probing infrastructure. To assert a CPU
+ requirement, other packages can pre-depend on one of the individual
+ feature-specific packages:
+ .
+ sse2-support, sse3-support, sse4.2-support, altivec-support, neon-support,
+ armv6-support, armv7-support, armv8-support, vfp-support, vfpv2-support,
+ vfpv3-support
