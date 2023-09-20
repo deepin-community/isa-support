@@ -1,0 +1,41 @@
+# Debconf translations for isa-support.
+# Copyright (C) 2017 THE isa-support'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the isa-support package.
+# Raimundo Corrêa <rcsjunior1976@gmail.com>, 2017.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: isa-support 3\n"
+"Report-Msgid-Bugs-To: isa-support@packages.debian.org\n"
+"POT-Creation-Date: 2022-08-17 11:25+0000\n"
+"PO-Revision-Date: 2017-12-13 09:00-0200\n"
+"Last-Translator: Raimundo Corrêa <rcsjunior1976@gmail.com>\n"
+"Language-Team: Brazilian Portuguese <debian-l10n-portuguese@lists.debian."
+"org>\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: note
+#. Description
+#: ../@NAME@-support.templates.in:1001
+msgid "Support for @NAME@ required"
+msgstr "Suporte para @NAME@ necessário"
+
+#. Type: note
+#. Description
+#: ../@NAME@-support.templates.in:1001
+msgid ""
+"Alas, your machine doesn't support the @NAME@ instruction set.  It is needed "
+"by software that depends on this dummy package.  Sorry."
+msgstr ""
+"Infelizmente, sua máquina não tem suporte para o conjunto de instruções "
+"@NAME@. Ele é necessário para os programas que dependem desse pacote "
+"fictício. Sinto muito."
+
+#. Type: note
+#. Description
+#: ../@NAME@-support.templates.in:1001
+msgid "Aborting installation."
+msgstr "Cancelando a instalação."

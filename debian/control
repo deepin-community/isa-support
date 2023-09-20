@@ -1,15 +1,293 @@
-Source: template-repository
-Section: unknown
+Source: isa-support
+Section: misc
 Priority: optional
-Maintainer: Tsic404 <liuheng@deepin.org>
-Build-Depends: debhelper (>= 11)
-Standards-Version: 4.1.3
-Homepage: https://github.com/deepin-community/template-repository
-#Vcs-Browser: https://salsa.debian.org/debian/deepin-community-template-repository
-#Vcs-Git: https://salsa.debian.org/debian/deepin-community-template-repository.git
+Maintainer: Bastien Roucariès <rouca@debian.org>
+Build-Depends: debhelper-compat (= 13), po-debconf
+Standards-Version: 4.6.1
+Rules-Requires-Root: no
+Vcs-Git: https://salsa.debian.org/debian/isa-support.git
+Vcs-Browser: https://salsa.debian.org/debian/isa-support
 
-Package: template-repository
-Architecture: any
+Package: isa-support
+Multi-Arch: same
+Architecture: any-i386 any-i386 any-amd64 armel armel armhf armhf powerpc
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Description: CPU feature checking - common back-end
+ The packages in the isa-support family probe for microprocessor Instruction
+ Set Architecture features such as SSE3. By refusing to install on machines
+ lacking a required feature, they allow ISA requirements to be handled in
+ terms of package dependencies.
+ .
+ This package provides the feature-probing infrastructure. To assert a CPU
+ requirement, other packages can pre-depend on one of the individual
+ feature-specific packages:
+ .
+ sse2-support, sse3-support, sse4.2-support, altivec-support, neon-support,
+ armv6-support, armv7-support, armv8-support, vfp-support, vfpv2-support,
+ vfpv3-support
+
+Package: sse2-support
+Multi-Arch: foreign
+Architecture: any-i386
+Pre-Depends: isa-support (= ${binary:Version})
+Description: CPU feature checking - require SSE2
+ The packages in the isa-support family probe for microprocessor Instruction
+ Set Architecture features such as SSE3. By refusing to install on machines
+ lacking a required feature, they allow ISA requirements to be handled in
+ terms of package dependencies.
+ .
+ This is a mostly dummy package which checks for SSE2 and refuses to install
+ on unsupported hardware.
+ .
+ Streaming SIMD Extensions (SSE) is a single instruction, multiple data
+ (SIMD) instruction set extension.
+ .
+ SSE2 was an incremental upgrade to SSE intended to fully replace the earlier
+ MMX instruction set. It is available on processors from Pentium 4 onward,
+ including all 64-bit capable ones, but not on Pentium 3, Athlon XP, Via C3,
+ Quark, or older processors.
+
+Package: sse3-support
+Multi-Arch: foreign
+Architecture: any-i386 any-amd64
+Pre-Depends: isa-support (= ${binary:Version})
+Description: CPU feature checking - require SSE3
+ The packages in the isa-support family probe for microprocessor Instruction
+ Set Architecture features such as SSE3. By refusing to install on machines
+ lacking a required feature, they allow ISA requirements to be handled in
+ terms of package dependencies.
+ .
+ This is a mostly dummy package which checks for SSE3 and refuses to install
+ on unsupported hardware.
+ .
+ Streaming SIMD Extensions (SSE) is a single instruction, multiple data
+ (SIMD) instruction set extension.
+ .
+ SSE3, also called PNI (Prescott New Instructions), is an incremental upgrade
+ to SSE2, adding a handful of new operations useful for processing media. It
+ is available on almost any 64-bit-capable processor except for some early
+ AMD models (Sledgehammer and Clawhammer), but is not available on most
+ 32-bit-only hardware.
+
+Package: sse4.1-support
+Multi-Arch: foreign
+Architecture: any-i386 any-amd64
+Pre-Depends: isa-support (= ${binary:Version})
+Description: CPU feature checking - require SSE4.1
+ The packages in the isa-support family probe for microprocessor Instruction
+ Set Architecture features such as SSE3. By refusing to install on machines
+ lacking a required feature, they allow ISA requirements to be handled in
+ terms of package dependencies.
+ .
+ This is a mostly dummy package which checks for SSE4.1 and refuses to install
+ on unsupported hardware.
+ .
+ Streaming SIMD Extensions (SSE) is a single instruction, multiple data
+ (SIMD) instruction set extension.
+ .
+ SSE4.1 added a dot product instruction and additional integer instructions.
+ It is available on Intel processors since Penryn (circa 2008), but notably
+ not on anything AMD until the Bulldozer (15h, in 2011) and Jaguar (16h, in
+ 2013) families.
+
+Package: sse4.2-support
+Multi-Arch: foreign
+Architecture: any-i386 any-amd64
+Pre-Depends: isa-support (= ${binary:Version})
+Description: CPU feature checking - require SSE4.2
+ The packages in the isa-support family probe for microprocessor Instruction
+ Set Architecture features such as SSE3. By refusing to install on machines
+ lacking a required feature, they allow ISA requirements to be handled in
+ terms of package dependencies.
+ .
+ This is a mostly dummy package which checks for SSE4.2 and refuses to install
+ on unsupported hardware.
+ .
+ SSE4.2 added string and text processing instructions that perform character
+ searches and comparison on two operands of 16 bytes at a time. It is
+ available on Intel processors since Nehalem (circa 2008), but notably not
+ on anything AMD until the Bulldozer (15h, in 2011) and Jaguar (16h, in
+ 2013) families.
+
+Package: altivec-support
+Multi-Arch: foreign
+Architecture: powerpc
+Pre-Depends: isa-support (= ${binary:Version})
+Description: CPU feature checking - require altivec
+ The packages in the isa-support family probe for microprocessor Instruction
+ Set Architecture features such as SSE3. By refusing to install on machines
+ lacking a required feature, they allow ISA requirements to be handled in
+ terms of package dependencies.
+ .
+ This is a mostly dummy package which checks for altivec and refuses to install
+ on unsupported hardware.
+ .
+ AltiVec is a single-precision floating point and integer SIMD instruction
+ set. It is a standard part of the Power ISA v.2.03 specification.
+
+Package: neon-support
+Multi-Arch: foreign
+Architecture: armhf
+Pre-Depends: isa-support (= ${binary:Version})
+Description: CPU feature checking - require neon
+ The packages in the isa-support family probe for microprocessor Instruction
+ Set Architecture features such as SSE3. By refusing to install on machines
+ lacking a required feature, they allow ISA requirements to be handled in
+ terms of package dependencies.
+ .
+ This is a mostly dummy package which checks for neon and refuses to install
+ on unsupported hardware.
+ .
+ This is a mostly dummy package which checks for Neon and refuses to install
+ on unsupported hardware.
+ .
+ Neon, also known as MPE (Media Processing Engine) or Advanced SIMD, is a
+ combined 64- and 128-bit SIMD instruction set that provides standardised
+ acceleration for media and signal processing applications. It is available
+ on the vast majority of armhf devices but not guaranteed before the 64-bit
+ capable ARMv8.
+
+Package: armv6-support
+Multi-Arch: foreign
+Architecture: armel
+Pre-Depends: isa-support (= ${binary:Version})
+Description: CPU feature checking - require ARMv6
+ The packages in the isa-support family probe for microprocessor Instruction
+ Set Architecture features such as SSE3. By refusing to install on machines
+ lacking a required feature, they allow ISA requirements to be handled in
+ terms of package dependencies.
+ .
+ This is a mostly dummy package which checks for ARMv6 and refuses to install
+ on unsupported hardware.
+ .
+ The ARMv6 architecture (not to be confused with product family ARM6) uses
+ physically addressed cache, solving many cache aliasing problems and
+ reducing context switch overhead. Unaligned and mixed-endian data access is
+ supported. This architecture includes the first version of Thumb
+ technology.
+ .
+ This feature is not guaranteed by the architecture baseline, but is
+ available for newer armel machines in the ARM11 product family, including
+ ARM1136J(F)-S, ARM1156T2(F)-S, ARM1176JZ(F)-S, ARM1136EJ(F)-S, and
+ ARM11MPCore processors. Boards include the Raspberry Pi model 1 and
+ Raspberry Pi Zero.
+
+Package: armv6k-support
+Multi-Arch: foreign
+Architecture: armel
+Pre-Depends: isa-support (= ${binary:Version})
+Description: CPU feature checking - require ARMv6K
+ The packages in the isa-support family probe for microprocessor Instruction
+ Set Architecture features such as SSE3. By refusing to install on machines
+ lacking a required feature, they allow ISA requirements to be handled in
+ terms of package dependencies.
+ .
+ This is a mostly dummy package which checks for ARMv6K and refuses to install
+ on unsupported hardware.
+ .
+ ARMv6k is a subarchitecture of ARMV6 adding Symmetric MultiProcessing
+ and Thread Local Storage instruction sets. It is not guaranteed by the
+ architecture baseline, but is available for newer armel machines in the
+ ARM11 product family; boards include the Raspberry Pi model 1 and
+ Raspberry Pi Zero.
+
+Package: armv7-support
+Multi-Arch: foreign
+Architecture: armel
+Pre-Depends: isa-support (= ${binary:Version})
+Description: CPU feature checking - require ARMv7
+ The packages in the isa-support family probe for microprocessor Instruction
+ Set Architecture features such as SSE3. By refusing to install on machines
+ lacking a required feature, they allow ISA requirements to be handled in
+ terms of package dependencies.
+ .
+ This is a mostly dummy package which checks for ARMv7 and refuses to install
+ on unsupported hardware.
+ .
+ ARMv7 (not to be confused with product family ARM7) includes Thumb-2
+ technology, adding 32-bit instructions into compressed Thumb mode. It is
+ not guaranteed by the architecture baseline, but is available for newer
+ armel machines (including CPUs that support armhf) since the Cortex-A
+ product family, including Cortex-A5, -A7, -A8, -A9, -A12, -A15, and -A17
+ processors. Boards include the Raspberry Pi 2.
+
+Package: armv8-support
+Multi-Arch: foreign
+Architecture: armel armhf
+Pre-Depends: isa-support (= ${binary:Version})
+Description: CPU feature checking - require ARMv8
+ The packages in the isa-support family probe for microprocessor Instruction
+ Set Architecture features such as SSE3. By refusing to install on machines
+ lacking a required feature, they allow ISA requirements to be handled in
+ terms of package dependencies.
+ .
+ This is a mostly dummy package which checks for ARMv8 and refuses to install
+ on unsupported hardware.
+ .
+ ARMv8 (not to be confused with product family ARM8) introduced a large
+ number of ISA enhancements. It is not guaranteed by the architecture
+ baseline, but is available for newer armel machines (including CPUs that
+ support armhf) since the Cortex-A product family, including Cortex-A32, as
+ well as all arm64 processors. Boards include the Raspberry Pi 3 and 4.
+
+Package: vfp-support
+Multi-Arch: foreign
+Architecture: armel
+Pre-Depends: isa-support (= ${binary:Version})
+Description: CPU feature checking - require VFP
+ The packages in the isa-support family probe for microprocessor Instruction
+ Set Architecture features such as SSE3. By refusing to install on machines
+ lacking a required feature, they allow ISA requirements to be handled in
+ terms of package dependencies.
+ .
+ This is a mostly dummy package which checks for VFP and refuses to install
+ on unsupported hardware.
+ .
+ VFP (Vector Floating Point) technology is a floating-point unit (FPU)
+ coprocessor extension to the ARM architecture. It provides single- and
+ double-precision floating-point computation fully compliant with IEEE
+ 754-1985.
+
+Package: vfpv2-support
+Multi-Arch: foreign
+Architecture: armel
+Pre-Depends: isa-support (= ${binary:Version})
+Description: CPU feature checking - require VFPv2
+ The packages in the isa-support family probe for microprocessor Instruction
+ Set Architecture features such as SSE3. By refusing to install on machines
+ lacking a required feature, they allow ISA requirements to be handled in
+ terms of package dependencies.
+ .
+ This is a mostly dummy package which checks for VFPv2 and refuses to install
+ on unsupported hardware.
+ .
+ VFP (Vector Floating Point) technology is a floating-point unit (FPU)
+ coprocessor extension to the ARM architecture. It provides single- and
+ double-precision floating-point computation fully compliant with IEEE
+ 754-1985.
+ .
+ VFPv2 has 16 64-bit FPU registers. It is available for some ARMv5 and
+ all ARMv6 cores.
+
+Package: vfpv3-support
+Multi-Arch: foreign
+Architecture: armel
+Pre-Depends: isa-support (= ${binary:Version})
+Description: CPU feature checking - require VFPv3
+ The packages in the isa-support family probe for microprocessor Instruction
+ Set Architecture features such as SSE3. By refusing to install on machines
+ lacking a required feature, they allow ISA requirements to be handled in
+ terms of package dependencies.
+ .
+ This is a mostly dummy package which checks for VFPv3 and refuses to install
+ on unsupported hardware.
+ .
+ VFP (Vector Floating Point) technology is a floating-point unit (FPU)
+ coprocessor extension to the ARM architecture. It provides single- and
+ double-precision floating-point computation fully compliant with IEEE
+ 754-1985.
+ .
+ VFPv3 has 32 64-bit FPU registers as standard, adds VCVT instructions to
+ convert between scalar, float, and double, and adds immediate mode to VMOV,
+ allowing constants to be loaded into FPU registers. It is available on most
+ Cortex-A8 and -A9 ARMv7 processors.

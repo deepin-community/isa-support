@@ -1,0 +1,50 @@
+#!/bin/sh
+set -e
+
+if [ "$1" = install ] || [ "$1" = upgrade ]; then
+    FILE="/usr/libexec/@DEB_HOST_MULTIARCH@/isa-support/test-@NAME@"
+    # "exec >;command" instead of "command >" looks strange but regular
+    # redirections don't fully work within qemu-user.
+    ret=0;(exec >/dev/null 2>&1; "$FILE") || ret=$?
+    if [ $ret -ne 0 ] && [ -n "$IGNORE_ISA" ]; then
+        cat >&2 <<END
+This machine doesn't support @NAME@, but override (IGNORE_ISA) is enabled.
+Continuing...
+END
+	ret=0
+    fi
+
+    if [ $ret -eq 126 ]; then
+        cat >&2 <<END
+Couldn't execute test binary for @NAME@, you either do foreign multi-arch
+without qemu or do something strange.  Assuming you know what you're doing.
+Continuing...
+END
+	ret=0
+    fi
+
+    if [ $ret -ne 0 ]; then
+        # Fail noisily, first via debconf (if installed).
+        if [ -e /usr/share/debconf/confmodule ]; then
+
+            . /usr/share/debconf/confmodule
+            db_version 2.0
+
+            db_fset @NAME@-support/fail seen false ||:
+            db_reset @NAME@-support/fail ||:
+            db_input critical @NAME@-support/fail ||:
+            db_go ||:
+            db_stop ||:
+        fi
+
+        cat >&2 <<END
+This machine doesn't support @NAME@, sorry.
+Aborting.
+END
+        exit 2
+    fi
+fi
+
+#DEBHELPER#
+
+exit 0

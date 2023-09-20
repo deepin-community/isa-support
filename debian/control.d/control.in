@@ -1,0 +1,14 @@
+Package: @LCNAME@-support
+Multi-Arch: foreign
+Architecture: @ARCHITECTURE@
+Pre-Depends: isa-support (= ${binary:Version})
+Description: CPU feature checking - require @NAME@
+ The packages in the isa-support family probe for microprocessor Instruction
+ Set Architecture features such as SSE3. By refusing to install on machines
+ lacking a required feature, they allow ISA requirements to be handled in
+ terms of package dependencies.
+ .
+ This is a mostly dummy package which checks for @NAME@ and refuses to install
+ on unsupported hardware.
+ .
+ @DESCRIPTION@

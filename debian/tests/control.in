@@ -1,0 +1,3 @@
+Tests: test-@NAME@
+Depends: isa-support, qemu-user-static (>>1:7.2~), build-essential
+Architecture: @ARCHITECTURE@

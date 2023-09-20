@@ -1,0 +1,210 @@
+#!/usr/bin/perl -w
+undef $/;
+my $DEB_HOST_MULTIARCH =
+  ( split /\n/, qx/dpkg-architecture -qDEB_HOST_MULTIARCH/ )[0];
+my $DEB_HOST_ARCH = ( split /\n/, qx/dpkg-architecture -qDEB_HOST_ARCH/ )[0];
+my $DEB_HOST_ARCH_BITS =
+  ( split /\n/, qx/dpkg-architecture -qDEB_HOST_ARCH_BITS/ )[0];
+my $DEB_HOST_ARCH_CPU =
+  ( split /\n/, qx/dpkg-architecture -qDEB_HOST_ARCH_CPU/ )[0];
+my $DEB_HOST_MULTIARCH_CPU = $DEB_HOST_MULTIARCH;
+$DEB_HOST_MULTIARCH_CPU =~ s/^([^-]+?)-.*$/$1/g;
+
+my $version = ( split /\n/, qx/dpkg-parsechangelog --show-field Version/ )[0];
+
+sub file_replace {
+    my ( $f, $name, $lcname ) = @_;
+    my $foutname = $f;
+    $foutname =~ s/[@]NAME[@]/$name/;
+    $foutname =~ s/[@]LCNAME[@]/$lcname/;
+    open IN, "<debian/$f.in" or die "Can't read debian/$f.in: $!\n";
+    local $_ = <IN>;
+    close IN;
+
+    s/[@]NAME[@]/$name/g;
+    s/[@]LCNAME[@]/$lcname/g;
+    s/[@]DEB_HOST_MULTIARCH[@]/$DEB_HOST_MULTIARCH/g;
+    open OUT, ">debian/$foutname"
+      or die "Can't write debian/$foutname: $!\n";
+    print OUT;
+    close OUT;
+}
+
+my $control;
+
+my $ctemplate;
+my $cfilename = 'test-@NAME@.c';
+open( my $fctemplate, '<', $cfilename ) or die "cannot open file $cfilename";
+{
+    local $/ = undef;
+    $ctemplate = <$fctemplate>;
+}
+close($fctemplate);
+
+# dpkg-shlibdeps now looks inside, but is ok with an empty file.
+system("touch debian/control");
+
+my @control_in;
+open IN, "<debian/control.d/control.in"
+  or die "Can't read debian/control.d/control.in: $!\n";
+$_ = <IN>;
+@control_in = grep !/^\s*$/s, split /\n\s*\n/s;
+close IN;
+
+my @controltest_in;
+open IN, "<debian/tests/control.in"
+  or die "Can't read debian/tests/control.in: $!\n";
+$_ = <IN>;
+@controltest_in = grep !/^\s*$/s, split /\n\s*\n/s;
+close IN;
+
+open ISA_LIST, "<isa-list" or die "Can't read isa-list: $!\n";
+$_ = <ISA_LIST>;
+close ISA_LIST;
+my %archlist;
+
+my @structs;
+foreach my $block ( split /\n\s*\n/s ) {
+    my $lastfield = undef;
+    my %data      = ();
+    foreach ( split /\n/s, $block ) {
+        next if /^#.*/;
+        next if /^\s*$/;
+        if (/^([^\s:]+?)\s*:\s*(.*?)\s*$/) {
+            $key          = $1;
+            $value        = $2 // '';
+            $data{"$key"} = "$value";
+            $lastfield    = "$key";
+        }
+        elsif (/^(\s+\S.*?)\s*$/) {
+            $data{$lastfield} .= "\n$1";
+        }
+
+        next;
+    }
+    if (%data) {
+        $data{"Package"} = "no" if !exists( $data{"Package"} );
+        push @structs, \%data;
+    }
+}
+
+my $controltest = '';
+
+for (@structs) {
+    my %entry = %$_;
+    $archlist{ $entry{'Architecture'} } = 1;
+    my $name   = $entry{'Name'};
+    my $lcname = lc($name);
+    $name =~ /^[a-zA-Z0-9\.+_-]+$/ or die "Bad package/isa name: \"$name\".\n";
+    my $description = $entry{'Description'};
+    $description =~ s/\A\s*\n+//m;
+    $description =~ s/\A\s+//m;
+
+    if ( $entry{'Package'} =~ /yes/i ) {
+        my @c = @control_in;
+        foreach (@c) {
+            s/[@]NAME[@]/$name/g;
+            s/[@]LCNAME[@]/$lcname/g;
+            s/[@]ARCHITECTURE[@]/$entry{'Architecture'}/g;
+            s/[@]DEB_HOST_MULTIARCH[@]/$DEB_HOST_MULTIARCH/g;
+            s/[@]DESCRIPTION[@]/$description/g;
+            $control .= "\n" . $_;
+        }
+    }
+
+    open C, '>', "test-$name.c";
+    my $test = $entry{'Test'} // "return !__builtin_cpu_supports(\"$lcname\");";
+    my $cfile = $ctemplate;
+    $cfile =~ s/[@]TEST[@]/$test/gm;
+    $cfile =~ s/[@]NAME[@]/$name/g;
+    $cfile =~ s/[@]VERSION[@]/$version/g;
+    my $cdescription = $description;
+    $cdescription =~ s/"/\"/gm;
+    $cdescription =~ s/^\s//gm;
+    $cdescription =~ s/^[.]\n/\n/gm;
+    $cdescription =~ s/\n/\\n\"\n \"/gm;
+    $cfile        =~ s/[@]DESCRIPTION[@]/$description/g;
+    $cfile        =~ s/[@]CDESCRIPTION[@]/$cdescription/g;
+
+    print C $cfile;
+    close C;
+
+    for my $qemutype (qw(good bad static-bad static-good)) {
+        my $qemu = $qemutype;
+        $qemu =~ s/^static-//g;
+        if ( exists $entry{ 'qemu-' . $qemu } ) {
+            my $qemu_extra = '';
+            $qemu_extra .= '-static' if ( $qemutype =~ '^static-' );
+
+            my $finname  = 'qemu-' . '@QEMUTYPE@-@NAME@';
+            my $foutname = $finname;
+            $foutname =~ s/[@]NAME[@]/$name/;
+            $foutname =~ s/[@]QEMUTYPE[@]/$qemutype/;
+            open IN, "<$finname" or die "Can't read $finname: $!\n";
+            local $_ = <IN>;
+            close IN;
+
+            s/[@]NAME[@]/$name/g;
+            s/[@]DEB_HOST_MULTIARCH[@]/$DEB_HOST_MULTIARCH/g;
+            s/[@]DEB_HOST_MULTIARCH_CPU[@]/$DEB_HOST_MULTIARCH_CPU/g;
+            s/[@]DEB_HOST_ARCH[@]/$DEB_HOST_ARCH/g;
+            s/[@]DEB_HOST_ARCH_BITS[@]/$DEB_HOST_ARCH_BITS/g;
+            s/[@]DEB_HOST_ARCH_CPU[@]/$DEB_HOST_ARCH_CPU/g;
+            if ( $qemutype =~ 'good$' ) {
+                s/[@]QEMU[@]/$entry{'qemu-good'}/g;
+            }
+            else {
+                s/[@]QEMU[@]/$entry{'qemu-bad'}/g;
+            }
+            s/[@]QEMU_EXTRA[@]/$qemu_extra/g;
+
+            open OUT, ">$foutname"
+              or die "Can't write $foutname: $!\n";
+            print OUT;
+            close OUT;
+        }
+    }
+
+    if ( exists $entry{'qemu-good'} and exists $entry{'qemu-bad'} ) {
+        my @c = @controltest_in;
+        foreach (@c) {
+            s/[@]NAME[@]/$name/g;
+            s/[@]LCNAME[@]/$lcname/g;
+            s/[@]ARCHITECTURE[@]/$entry{'Architecture'}/g;
+            s/[@]DEB_HOST_MULTIARCH[@]/$DEB_HOST_MULTIARCH/g;
+            s/[@]DESCRIPTION[@]/$description/g;
+            $controltest .= $_ . "\n";
+        }
+        file_replace( 'tests/test-@NAME@', $name, $lcname );
+        chmod 0777, "debian/tests/test-$name";
+    }
+
+    foreach (
+        qw(@LCNAME@-support.preinst @LCNAME@-support.templates @LCNAME@-support.lintian-overrides @LCNAME@-support.maintscript)
+      )
+    {
+        file_replace( $_, $name, $lcname );
+    }
+}
+
+my $all_architectures = join( ' ', sort( keys %archlist ) );
+
+my $control_base;
+my $filename = "debian/control.d/control-base.in";
+open( my $fh, '<', $filename ) or die "cannot open file $filename";
+{
+    local $/ = undef;
+    $control_base = <$fh>;
+}
+close($fh);
+$control_base =~ s/[@]ALL_ARCHITECTURES[@]/$all_architectures/g;
+$control = $control_base . $control;
+
+open CONTROL, ">debian/control" or die "Can't write to debian/control: $!\n";
+print CONTROL $control;
+close CONTROL;
+
+open CONTROLTEST, ">debian/tests/control"
+  or die "Can't write to debian/tests/control: $!\n";
+print CONTROLTEST $controltest;
+close CONTROLTEST;

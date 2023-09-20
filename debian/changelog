@@ -1,5 +1,178 @@
-template-repository (1.0-1) unstable; urgency=medium
+isa-support (20) unstable; urgency=medium
 
-  * Initial release
+  * Work arround qemu bug #1041471.
+  * Remove Gioele Barabucci as uploader. Thanks Giole
 
- -- Tsic404 <liuheng@deepin.org>  Sat, 28 Jan 2023 13:46:49 +0800
+ -- Bastien Roucariès <rouca@debian.org>  Fri, 28 Jul 2023 17:35:59 +0000
+
+isa-support (19) unstable; urgency=medium
+
+  * Upload to unstable
+  * Bug fix: "[INTL:es] Spanish translation of isa-support debconf
+    template", thanks to Camaleón (Closes: #1036375).
+
+ -- Bastien Roucariès <rouca@debian.org>  Sun, 18 Jun 2023 16:05:40 +0000
+
+isa-support (18) experimental; urgency=medium
+
+  * Release with fix from Andreas Beckmann.
+
+ -- Bastien Roucariès <rouca@debian.org>  Thu, 25 May 2023 19:53:50 +0000
+
+isa-support (17) experimental; urgency=medium
+
+  * Add ABI version on i386/amd64
+
+ -- Bastien Roucariès <rouca@debian.org>  Mon, 27 Feb 2023 09:10:04 +0000
+
+isa-support (16) experimental; urgency=medium
+
+  * Run test suite using qemu-static
+
+ -- Bastien Roucariès <rouca@debian.org>  Mon, 12 Sep 2022 12:57:11 +0000
+
+isa-support (15.1) unstable; urgency=high
+
+  * Fix .maintscript generation for /usr/share/doc/$PACKAGE -> isa-support
+    symlink conversion.  (Closes: #1035766). Thanks to Andreas Beckmann.
+
+ -- Bastien Roucariès <rouca@debian.org>  Thu, 25 May 2023 19:44:40 +0000
+
+isa-support (15) unstable; urgency=high
+
+  * Bug fix: "version 14 fails to install where version 13 installs fine
+    due to different binary capitalization: test-sse3 vs test-SSE3",
+    thanks to Axel Beckert (Closes: #1019556).
+  * Install qemu-bad-ISA/qemu-good-ISA in order to allow test
+
+ -- Bastien Roucariès <rouca@debian.org>  Mon, 12 Sep 2022 10:53:47 +0000
+
+isa-support (14) unstable; urgency=medium
+
+  * Bug fix: "improving package descriptions", thanks to Daniel Baumann
+    (Closes: #919858).
+
+ -- Bastien Roucariès <rouca@debian.org>  Sun, 11 Sep 2022 13:39:10 +0000
+
+isa-support (13) unstable; urgency=medium
+
+  * Upload to unstable
+
+ -- Bastien Roucariès <rouca@debian.org>  Wed, 31 Aug 2022 19:33:51 +0000
+
+isa-support (12) experimental; urgency=medium
+
+  * Bug fix: "isa-support.deb description doesn't make sense", thanks
+    to Christoph Berg (Closes: #1018714).
+  * Bug fix: "Please build sse4.1-support", thanks to Michael
+    R. Crusoe (Closes: #959722).
+  * Introduce armv6k-support needed by nodejs
+
+ -- Bastien Roucariès <rouca@debian.org>  Mon, 29 Aug 2022 17:01:50 +0000
+
+isa-support (11) unstable; urgency=medium
+
+  * asm statement should be volatile
+  * Upload to unstable
+
+ -- Bastien Roucariès <rouca@debian.org>  Mon, 22 Aug 2022 12:56:19 +0000
+
+isa-support (10) experimental; urgency=medium
+
+  * Detect vfp, vfp2, vfp3 floating point on armel
+  * Detect arm version on armel (Closes: #994712).
+
+ -- Bastien Roucariès <rouca@debian.org>  Sat, 20 Aug 2022 13:59:37 +0000
+
+isa-support (9) unstable; urgency=medium
+
+  * Upload to sid
+  * Allow isa-support package to be co-installable
+  * Replace bash by sh in preinst script by setting core file limit
+    in C source and catching SIGILL, SIGBUS, SIGSEGV
+
+ -- Bastien Roucariès <rouca@debian.org>  Thu, 18 Aug 2022 09:54:18 +0000
+
+isa-support (8) experimental; urgency=medium
+
+  [ Gioele Barabucci ]
+  * d/preinst: Use base64 instead of uuencode+perl to encode test binaries
+  * d/control: Adopt package (Closes: #1014892)
+  * d/control: Bump Standards-Version to 4.6.1 (no changes needed)
+  * d/control: Update to debhelper compat 13
+  * d/control: Fix Vcs-Browser URL
+  * d/preinst: Use `||` and `&&` instead of non well defined `-o` and `-a`
+  * d/preinst: Use command substitutions instead of backticks
+  * build: Split into multiple scripts
+  * build: Delegate compilation to Makefile
+  * Materialize package files
+  * d/control: Add instruction set name to Description
+  * calculate-shlibdeps: Run only on archs supported by host machine
+  * d/po: Refresh po files (no changes in messages)
+  * d/control: Avoid repeated Priority field in binary package stanzas
+  * d/s/lintian-overrides: Drop package-depends-on-hardcoded-libc
+  * d/gitlab-ci: Add standard CI instructions
+
+  [ Bastien Roucariès ]
+  * Add myself as uploader
+  * run salsa-ci tests
+  * Run make only on test for DEB_HOST_ARCH
+  * Split package and do not use embdeded base64 ELF binaries in preinst
+    (Closes: 1017513)
+
+ -- Bastien Roucariès <rouca@debian.org>  Wed, 17 Aug 2022 10:26:10 +0000
+
+isa-support (7) unstable; urgency=medium
+
+  * QA upload.
+  * Orphan the package.
+  * Work around dpkg-shlibdeps failing when in a clean git checkout.
+    Closes: #1014712
+
+ -- Adam Borowski <kilobyte@angband.pl>  Wed, 13 Jul 2022 23:33:28 +0200
+
+isa-support (6) unstable; urgency=medium
+
+  [ Helmut Grohne ]
+  * Fix FTCBFS: Let dpkg's buildtools.mk supply a C compiler. (Closes: #982186)
+
+ -- Adam Borowski <kilobyte@angband.pl>  Mon, 08 Feb 2021 02:12:50 +0100
+
+isa-support (5) unstable; urgency=medium
+
+  * Chinese (simplified) translation (Boyuan Yang).
+
+ -- Adam Borowski <kilobyte@angband.pl>  Wed, 17 Jan 2018 01:05:58 +0100
+
+isa-support (4) unstable; urgency=medium
+
+  * French translation (Jean-Pierre Giraud).  Closes: #875549
+  * Russian translation (Lev Lamberov).  Closes: #883205
+  * Brazilian translation (Raimundo Corrêa).  Closes: #887471
+  * Move the VCS to salsa.
+  * R³.
+
+ -- Adam Borowski <kilobyte@angband.pl>  Wed, 17 Jan 2018 00:52:58 +0100
+
+isa-support (3) unstable; urgency=medium
+
+  * Make the build reproducible (Chris Lamb).  Closes: #872453
+  * German translation (Chris Leick).  Closes: #873378
+  * Dutch translation (Frans Spiesschaert).  Closes: #874283
+
+ -- Adam Borowski <kilobyte@angband.pl>  Mon, 04 Sep 2017 21:43:34 +0200
+
+isa-support (2) unstable; urgency=medium
+
+  * Move the VCS to collab-maint.
+  * Machinery for substituting variables in debconf translations.
+  * Portuguese translation (Rui Branco).  Closes: #872176
+  * Polish translation (I forgot I know this language...).
+
+ -- Adam Borowski <kilobyte@angband.pl>  Tue, 15 Aug 2017 16:04:48 +0200
+
+isa-support (1) unstable; urgency=medium
+
+  * Initial release (Closes: #823672)
+
+ -- Adam Borowski <kilobyte@angband.pl>  Thu, 03 Aug 2017 23:42:42 +0200

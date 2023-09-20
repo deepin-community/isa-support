@@ -1,0 +1,38 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the isa-support package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: isa-support\n"
+"Report-Msgid-Bugs-To: isa-support@packages.debian.org\n"
+"POT-Creation-Date: 2022-08-17 11:25+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: note
+#. Description
+#: ../@NAME@-support.templates.in:1001
+msgid "Support for @NAME@ required"
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../@NAME@-support.templates.in:1001
+msgid ""
+"Alas, your machine doesn't support the @NAME@ instruction set.  It is needed "
+"by software that depends on this dummy package.  Sorry."
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../@NAME@-support.templates.in:1001
+msgid "Aborting installation."
+msgstr ""
