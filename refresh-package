@@ -1,4 +1,7 @@
 #!/usr/bin/perl -w
+use Text::Trim qw(trim);
+use List::MoreUtils qw(uniq);
+
 undef $/;
 my $DEB_HOST_MULTIARCH =
   ( split /\n/, qx/dpkg-architecture -qDEB_HOST_MULTIARCH/ )[0];
@@ -92,7 +95,7 @@ my $controltest = '';
 
 for (@structs) {
     my %entry = %$_;
-    $archlist{ $entry{'Architecture'} } = 1;
+    $archlist{ trim($entry{'Architecture'}) } = 1;
     my $name   = $entry{'Name'};
     my $lcname = lc($name);
     $name =~ /^[a-zA-Z0-9\.+_-]+$/ or die "Bad package/isa name: \"$name\".\n";
@@ -129,13 +132,9 @@ for (@structs) {
     print C $cfile;
     close C;
 
-    for my $qemutype (qw(good bad static-bad static-good)) {
+    for my $qemutype (qw(good bad)) {
         my $qemu = $qemutype;
-        $qemu =~ s/^static-//g;
         if ( exists $entry{ 'qemu-' . $qemu } ) {
-            my $qemu_extra = '';
-            $qemu_extra .= '-static' if ( $qemutype =~ '^static-' );
-
             my $finname  = 'qemu-' . '@QEMUTYPE@-@NAME@';
             my $foutname = $finname;
             $foutname =~ s/[@]NAME[@]/$name/;
@@ -156,7 +155,6 @@ for (@structs) {
             else {
                 s/[@]QEMU[@]/$entry{'qemu-bad'}/g;
             }
-            s/[@]QEMU_EXTRA[@]/$qemu_extra/g;
 
             open OUT, ">$foutname"
               or die "Can't write $foutname: $!\n";
@@ -166,11 +164,12 @@ for (@structs) {
     }
 
     if ( exists $entry{'qemu-good'} and exists $entry{'qemu-bad'} ) {
+        my $qemu_arch = $entry{'qemu-Architecture'} // $entry{'Architecture'};
         my @c = @controltest_in;
         foreach (@c) {
             s/[@]NAME[@]/$name/g;
             s/[@]LCNAME[@]/$lcname/g;
-            s/[@]ARCHITECTURE[@]/$entry{'Architecture'}/g;
+            s/[@]ARCHITECTURE[@]/$qemu_arch/g;
             s/[@]DEB_HOST_MULTIARCH[@]/$DEB_HOST_MULTIARCH/g;
             s/[@]DESCRIPTION[@]/$description/g;
             $controltest .= $_ . "\n";
@@ -187,7 +186,15 @@ for (@structs) {
     }
 }
 
-my $all_architectures = join( ' ', sort( keys %archlist ) );
+my %all_architectures_hash = map {$_ => 1} uniq(sort(split(/ /,join( ' ', sort( keys %archlist )))));
+if (exists $all_architectures_hash{'any-arm'}) {
+    $all_architectures_hash{'armel'} = 0;
+    $all_architectures_hash{'armhf'} = 0;
+}
+while ( my ( $key, $val ) = each %all_architectures_hash ) {
+    delete $all_architectures_hash{$key} if not ($val // 0);
+}
+my $all_architectures = join(' ',sort(keys(%all_architectures_hash)));
 
 my $control_base;
 my $filename = "debian/control.d/control-base.in";

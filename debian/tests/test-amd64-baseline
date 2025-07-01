@@ -5,7 +5,7 @@ set -e
 DEB_HOST_MULTIARCH=$(dpkg-architecture -qDEB_HOST_MULTIARCH)
 
 
-"/usr/libexec/$DEB_HOST_MULTIARCH/isa-support/qemu-static-good-amd64-baseline" "/usr/libexec/$DEB_HOST_MULTIARCH/isa-support/test-amd64-baseline"
+"/usr/libexec/$DEB_HOST_MULTIARCH/isa-support/qemu-good-amd64-baseline" "/usr/libexec/$DEB_HOST_MULTIARCH/isa-support/test-amd64-baseline"
 # trap signal to self
 trap "exit 0" ILL
 trap "exit 0" SEGV
@@ -17,7 +17,7 @@ sed_move_to_stderr() {
 }
 
 qemu_bad() {
-    "/usr/libexec/$DEB_HOST_MULTIARCH/isa-support/qemu-static-bad-amd64-baseline" "/usr/libexec/$DEB_HOST_MULTIARCH/isa-support/test-amd64-baseline" || true
+    "/usr/libexec/$DEB_HOST_MULTIARCH/isa-support/qemu-bad-amd64-baseline" "/usr/libexec/$DEB_HOST_MULTIARCH/isa-support/test-amd64-baseline" || true
 }
 
 exec 5>&1
