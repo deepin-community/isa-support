@@ -2,8 +2,8 @@ Source: isa-support
 Section: misc
 Priority: optional
 Maintainer: Bastien Roucariès <rouca@debian.org>
-Build-Depends: debhelper-compat (= 13), po-debconf
-Standards-Version: 4.6.1
+Build-Depends: debhelper-compat (= 13), po-debconf, libtext-trim-perl, liblist-moreutils-perl:native, qemu-user <!nocheck>
+Standards-Version: 4.6.2
 Rules-Requires-Root: no
 Vcs-Git: https://salsa.debian.org/debian/isa-support.git
 Vcs-Browser: https://salsa.debian.org/debian/isa-support
@@ -12,6 +12,7 @@ Package: isa-support
 Multi-Arch: same
 Architecture: @ALL_ARCHITECTURES@
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Breaks: qemu-user (<< 1:9.1.0+ds-8~)
 Description: CPU feature checking - common back-end
  The packages in the isa-support family probe for microprocessor Instruction
  Set Architecture features such as SSE3. By refusing to install on machines

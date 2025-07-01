@@ -1,6 +1,63 @@
+isa-support (27) unstable; urgency=medium
+
+  * Bug fix: "Update/add debconf template translation [INTL:ca]", thanks
+    to Carles Pina i Estany (Closes: #1101119).
+  * Bug fix: "[INTL:ro] Romanian debconf templates translation of
+    isa-support", thanks to Remus-Gabriel Chelu (Closes: #1102146).
+
+ -- Bastien Roucariès <rouca@debian.org>  Mon, 21 Apr 2025 14:52:35 +0200
+
+isa-support (26) unstable; urgency=medium
+
+  * Upload to unstable
+  * Fix typo in description (Closes: #1086662)
+  * Fix lintian warning
+  * Fix crossbuild
+
+ -- Bastien Roucariès <rouca@debian.org>  Sun, 03 Nov 2024 22:50:48 +0000
+
+isa-support (25) experimental; urgency=medium
+
+  * Enable neon for armel.
+  * Test neon using HWCAP.
+  * Enable altivec detection on all ppc.
+  * Bug fix: "please add armv8 + crc support package", thanks to Luca
+    Boccassi (Closes: #1075759).
+  * Add test for arm64-baseline.
+
+ -- Bastien Roucariès <rouca@debian.org>  Wed, 30 Oct 2024 14:05:28 +0000
+
+isa-support (24) unstable; urgency=medium
+
+  * Sourcefull upload
+
+ -- Bastien Roucariès <rouca@debian.org>  Wed, 26 Jun 2024 21:56:42 +0000
+
+isa-support (23) unstable; urgency=medium
+
+  * Upload to unstable
+  * Rebuild from source (Closes: #1029792)
+  * Bug fix: "[INTL:sv] Swedish strings for isa-support debconf", thanks
+    to Martin Bagge (Closes: #1071730).
+
+ -- Bastien Roucariès <rouca@debian.org>  Wed, 26 Jun 2024 06:01:56 +0000
+
+isa-support (22) experimental; urgency=medium
+
+  * Add x86-64-v2-support, x86-64-v3-support and
+    amd64-baseline-support packages.
+
+ -- Bastien Roucariès <rouca@debian.org>  Mon, 24 Jun 2024 12:16:24 +0000
+
+isa-support (21) unstable; urgency=medium
+
+  * Fix a typo in qemu emulation for sse
+
+ -- Bastien Roucariès <rouca@debian.org>  Sun, 26 Nov 2023 13:22:02 +0000
+
 isa-support (20) unstable; urgency=medium
 
-  * Work arround qemu bug #1041471.
+  * Work arround qemu bug (Closes: #1041471).
   * Remove Gioele Barabucci as uploader. Thanks Giole
 
  -- Bastien Roucariès <rouca@debian.org>  Fri, 28 Jul 2023 17:35:59 +0000

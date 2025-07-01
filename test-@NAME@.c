@@ -10,6 +10,13 @@
 
 #include <sys/auxv.h>
 
+/* workarround bug on arm see #1086502*/
+#ifdef __arm__
+#ifndef HWCAP_CRC32
+#include <asm/hwcap.h>
+#endif
+#endif
+
 #if defined(__x86_64__) || defined(__i386__)
 #include <sys/platform/x86.h>
 #endif

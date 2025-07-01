@@ -8,7 +8,7 @@ Description: CPU feature checking - require @NAME@
  lacking a required feature, they allow ISA requirements to be handled in
  terms of package dependencies.
  .
- This is a mostly dummy package which checks for @NAME@ and refuses to install
- on unsupported hardware.
+ This is a mostly dummy package which checks for @NAME@ and
+ refuses to install on unsupported hardware.
  .
  @DESCRIPTION@

@@ -7,6 +7,7 @@
 # Description: added to package's description.
 # qemu-good: qemu run ok
 # qemu-bad: qemu not ok
+# qemu-arch: enable qemu only on arch. Default architecture
 # package: yes/no add a package for this test. Default no
 # priority: higher are tested first
 
@@ -18,20 +19,20 @@ Test: return !(
  __builtin_cpu_supports("cmov") &&
  CPU_FEATURE_ACTIVE(CX8)
  );
-qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu pentium',+cmov,+cx8'
-qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu pentium',-cmov,-cx8'
+qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu 'pentium2-v1,enforce'
+qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu 'pentium-v1,enforce,-cmov,-cx8'
 Description:
- This is the Micro-Architecture Levels baseline for debian under i386 architecture, corresponding
+ This is the Micro-Architecture Levels baseline for Debian under i386 architecture, corresponding
  to i686 CPU.
  .
  This includes:
- - cmov instruction (CMOV instruction set),
- - cmpxchg8b ant other 64 bits atomics instruction (CX8 instruction set).
+  - cmov instruction (CMOV instruction set),
+  - cmpxchg8b ant other 64 bits atomics instruction (CX8 instruction set).
 
 Name: SSE2
 Architecture: any-i386
-qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu qemu"$DEB_HOST_ARCH_BITS"',+sse2'
-qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu qemu"$DEB_HOST_ARCH_BITS"',-see2,-sse3,-ssse3,-sse4.1,-sse4.2'
+qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu 'athlon,enforce'
+qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu 'pentium2-v1,enforce'
 Priority: 500
 Package: yes
 Description:
@@ -44,27 +45,27 @@ Description:
  Quark, or older processors.
 
 Name: amd64-baseline
-Architecture: any-i386 any-amd64
-Package: no
+Architecture: any-i386
+Package: yes
 Priority: -1
 Test: return !(
  __builtin_cpu_supports("cmov") && __builtin_cpu_supports("mmx") && __builtin_cpu_supports("sse") &&
  __builtin_cpu_supports("sse2") &&
  CPU_FEATURE_ACTIVE(CX8) && CPU_FEATURE_ACTIVE(FXSR)
  );
-qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu qemu"$DEB_HOST_ARCH_BITS"',+cmov,+mmx,+sse,+sse2,+cx8,+fxsr'
-qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu qemu"$DEB_HOST_ARCH_BITS"',-sse,-sse2'
+qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu 'Conroe,enforce,-sse3,-ssse3'
+qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu 'pentium3,enforce'
 Description:
- This is the Micro-Architecture Levels baseline for debian under x86-64 architecture, corresponding
- to x86-65 psABI v1.
+ This is the Micro-Architecture Levels baseline for Debian under
+ x86-64 architecture, corresponding to x86-64 psABI v1.
  .
  This includes:
- - cmov instruction (CMOV instruction set),
- - cmpxchg8b ant other 64 bits atomics instruction (CX8 instruction set),
- - MMX a single instruction, multiple data (SIMD) instruction set,
- - streaming SIMD Extensions (SSE) set, a single instruction, multiple data
+  - cmov instruction (CMOV instruction set),
+  - cmpxchg8b ant other 64 bits atomics instruction (CX8 instruction set),
+  - MMX a single instruction, multiple data (SIMD) instruction set,
+  - streaming SIMD Extensions (SSE) set, a single instruction, multiple data
    (SIMD) instruction set extension,
- - SSE2 an incremental upgrade to SSE.
+  - SSE2 an incremental upgrade to SSE.
  .
  On ABIs other than the x86-64 psABI they select the same CPU features
  as the x86-64 psABI documents for the particular micro-architecture level.
@@ -78,26 +79,27 @@ Test: return !(
  __builtin_cpu_supports("sse2") &&
  CPU_FEATURE_ACTIVE(CX8) && CPU_FEATURE_ACTIVE(FXSR)
  );
-qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu qemu"$DEB_HOST_ARCH_BITS"',+cmov,+mmx,+sse,+sse2,+cx8,+fxsr'
-qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu qemu"$DEB_HOST_ARCH_BITS"',-cmov,-mmx,-sse,-sse2,-cx8,-fxsr'
+qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu 'Conroe,enforce,-sse3,-ssse3'
+qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu 'pentium3-v1,enforce,-cmov,-mmx,-sse,-sse2,-cx8,-fxsr'
 Description:
- This is the Micro-Architecture Levels baseline as defined by the amd64 ABI document.
+ This is the Micro-Architecture Levels baseline as defined by the
+ amd64 ABI document.
  This includes:
- - cmov instruction (CMOV instruction set),
- - cmpxchg8b ant other 64 bits atomics instruction (CX8 instruction set),
- - MMX a single instruction, multiple data (SIMD) instruction set,
- - streaming SIMD Extensions (SSE) set, a single instruction, multiple data
-   (SIMD) instruction set extension,
- - SSE2 an incremental upgrade to SSE.
+  - cmov instruction (CMOV instruction set),
+  - cmpxchg8b ant other 64 bits atomics instruction (CX8 instruction set),
+  - MMX a single instruction, multiple data (SIMD) instruction set,
+  - streaming SIMD Extensions (SSE) set, a single instruction, multiple data
+    (SIMD) instruction set extension,
+  - SSE2 an incremental upgrade to SSE.
  .
  On ABIs other than the x86-64 psABI they select the same CPU features
  as the x86-64 psABI documents for the particular micro-architecture level.
 
 Name: x86-64-v2
 Architecture: any-i386 any-amd64
-Package: no
-qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu qemu"$DEB_HOST_ARCH_BITS"'-v1,+cmov,+mmx,+sse,+sse2,+cx8,+fxsr,+cx16,+lahf-lm,+popcnt,+sse3,+sse4.1,+sse4.2,+ssse3'
-qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu qemu"$DEB_HOST_ARCH_BITS"'-v1,+cmov,+mmx,+sse,+sse2,+cx8,+fxsr,-cx16,-lahf-lm,-popcnt,-sse3,-sse4.1,-sse4.2,-ssse3'
+Package: yes
+qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu 'Nehalem-IBRS,enforce'
+qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu 'Conroe,enforce,-sse3,-ssse3'
 Priority: 2000
 Test: return !(
  __builtin_cpu_supports("cmov") && __builtin_cpu_supports("mmx") && __builtin_cpu_supports("sse") &&
@@ -108,21 +110,22 @@ Test: return !(
  __builtin_cpu_supports("sse4.1") && __builtin_cpu_supports("sse4.2") && __builtin_cpu_supports("ssse3")
  );
 Description:
- This is the Micro-Architecture Levels version 2 as defined by the amd64 ABI document.
+ This is the Micro-Architecture Levels version 2 as defined by the
+ amd64 ABI document.
  This includes:
- - cmov instruction (CMOV instruction set),
- - cmpxchg8b ant other 64 bits atomics instruction (CX8 instruction set),
- - MMX a single instruction, multiple data (SIMD) instruction set,
- - streaming SIMD Extensions (SSE) set, a single instruction, multiple data
-   (SIMD) instruction set extension,
- - SSE2 an incremental upgrade to SSE.
- - cmpxchg16b ant other 128 bits atomics instruction (CX16 instruction set),
- - SSE3, also called PNI (Prescott New Instructions), is an incremental upgrade
-   to SSE2
- - SSE4.1 added a dot product instruction and additional integer instructions.
- - SSE4.2 added string and text processing instructions that perform character
-   searches and comparison on two operands of 16 bytes at a time.
- - SSSE3 or Supplemental Streaming SIMD Extension 3.
+  - cmov instruction (CMOV instruction set),
+  - cmpxchg8b ant other 64 bits atomics instruction (CX8 instruction set),
+  - MMX a single instruction, multiple data (SIMD) instruction set,
+  - streaming SIMD Extensions (SSE) set, a single instruction, multiple data
+    (SIMD) instruction set extension,
+  - SSE2 an incremental upgrade to SSE.
+  - cmpxchg16b ant other 128 bits atomics instruction (CX16 instruction set),
+  - SSE3, also called PNI (Prescott New Instructions), is an incremental upgrade
+    to SSE2
+  - SSE4.1 added a dot product instruction and additional integer instructions.
+  - SSE4.2 added string and text processing instructions that perform character
+    searches and comparison on two operands of 16 bytes at a time.
+  - SSSE3 or Supplemental Streaming SIMD Extension 3.
  .
  The corresponding micro-architecture level from the x86-64 psABI.
  On ABIs other than the x86-64 psABI they select the same CPU features
@@ -130,8 +133,8 @@ Description:
 
 Name: SSE3
 Architecture: any-i386 any-amd64
-qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu qemu"$DEB_HOST_ARCH_BITS"',+sse2,+sse3,+ssse3'
-qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu qemu"$DEB_HOST_ARCH_BITS"',+sse2,-sse3,-ssse3,-sse4.1,-sse4.2'
+qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu 'Conroe,enforce,-ssse3'
+qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu 'Conroe,enforce,-sse3,-ssse3'
 Package: yes
 Priority: 700
 Description:
@@ -146,8 +149,8 @@ Description:
 
 Name: SSE4.1
 Architecture: any-i386 any-amd64
-qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu qemu"$DEB_HOST_ARCH_BITS"',+sse2,+sse3,+ssse3,+sse4.1'
-qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu qemu"$DEB_HOST_ARCH_BITS"',+sse2,+sse3,+ssse3,-sse4.1,-sse4.2'
+qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu 'Penryn,enforce'
+qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu 'Conroe,enforce'
 Package: yes
 Priority: 800
 Description:
@@ -161,8 +164,8 @@ Description:
 
 Name: SSE4.2
 Architecture: any-i386 any-amd64
-qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu "qemu$DEB_HOST_ARCH_BITS"',+sse2,+sse3,+ssse3,+sse4.1,+sse4.2'
-qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu "qemu$DEB_HOST_ARCH_BITS"',+sse2,+sse3,+ssse3,+sse4.1,-sse4.2'
+qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu 'Nehalem-IBRS,enforce'
+qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu 'Penryn,enforce'
 Package: yes
 Priority: 900
 Description:
@@ -175,9 +178,9 @@ Description:
 Name: x86-64-v3
 Architecture: any-i386 any-amd64
 Priority: 3000
-Package: no
-#qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu qemu"$DEB_HOST_ARCH_BITS"-v1',+cmov,+mmx,+sse,+sse2,+cx8,+fxsr,+cx16,+lahf-lm,+popcnt,+sse3,+sse4.1,+sse4.2,+ssse3,+avx,+avx2,+bmi1,+bmi2,+f16c,+fma,+abm'
-#qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu qemu"$DEB_HOST_ARCH_BITS"-v1',+cmov,+mmx,+sse,+sse2,+cx8,+fxsr,+cx16,+lahf-lm,+popcnt,+sse3,+sse4.1,+sse4.2,+ssse3,-avx,-avx2,-bmi1,-bmi2,-f16c,-fma,-abm'
+Package: yes
+qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu 'Haswell-noTSX-IBRS,enforce'
+qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu 'Nehalem-IBRS,enforce'
 Test: return !(
  __builtin_cpu_supports("cmov") && __builtin_cpu_supports("mmx") && __builtin_cpu_supports("sse") &&
  __builtin_cpu_supports("sse2") &&
@@ -192,27 +195,28 @@ Test: return !(
  CPU_FEATURE_ACTIVE(LZCNT) && CPU_FEATURE_ACTIVE(OSXSAVE)
  );
 Description:
- This is the Micro-Architecture Levels version 3 as defined by the amd64 ABI document.
+ This is the Micro-Architecture Levels version 3 as defined by
+ the amd64 ABI document.
  This includes:
- - cmov instruction (CMOV instruction set),
- - cmpxchg8b ant other 64 bits atomics instruction (CX8 instruction set),
- - MMX a single instruction, multiple data (SIMD) instruction set,
- - streaming SIMD Extensions (SSE) set, a single instruction, multiple data
+  - cmov instruction (CMOV instruction set),
+  - cmpxchg8b ant other 64 bits atomics instruction (CX8 instruction set),
+  - MMX a single instruction, multiple data (SIMD) instruction set,
+  - streaming SIMD Extensions (SSE) set, a single instruction, multiple data
    (SIMD) instruction set extension,
- - SSE2 an incremental upgrade to SSE.
- - cmpxchg16b ant other 128 bits atomics instruction (CX16 instruction set),
- - SSE3, also called PNI (Prescott New Instructions), is an incremental upgrade
-   to SSE2,
- - SSE4.1 added a dot product instruction and additional integer instructions,
- - SSE4.2 added string and text processing instructions that perform character
-   searches and comparison on two operands of 16 bytes at a time,
- - SSSE3 or Supplemental Streaming SIMD Extension 3,
- - Advanced Vector Extensions (AVX and AVX2)
- - Bit manipulation instructions sets (BMI and BMI2),
- - F16C instruction set converting between half-precision
-   and standard IEEE single-precision floating-point formats,
- - LZCNT instruction, Count the Number of Leading Zero Bits,
- - OSXSAVE, Save Processor Extended States instruction.
+  - SSE2 an incremental upgrade to SSE.
+  - cmpxchg16b ant other 128 bits atomics instruction (CX16 instruction set),
+  - SSE3, also called PNI (Prescott New Instructions), is an incremental upgrade
+    to SSE2,
+  - SSE4.1 added a dot product instruction and additional integer instructions,
+  - SSE4.2 added string and text processing instructions that perform character
+    searches and comparison on two operands of 16 bytes at a time,
+  - SSSE3 or Supplemental Streaming SIMD Extension 3,
+  - Advanced Vector Extensions (AVX and AVX2)
+  - Bit manipulation instructions sets (BMI and BMI2),
+  - F16C instruction set converting between half-precision
+    and standard IEEE single-precision floating-point formats,
+  - LZCNT instruction, Count the Number of Leading Zero Bits,
+  - OSXSAVE, Save Processor Extended States instruction.
  .
  The corresponding micro-architecture level from the x86-64 psABI.
  On ABIs other than the x86-64 psABI they select the same CPU features
@@ -220,8 +224,8 @@ Description:
 
 
 Name: altivec
-Architecture: powerpc
-Test: asm volatile("vsldoi %v1,%v1,%v1,0");
+Architecture: powerpc ppc64 ppc64el
+Test: !(getauxval(AT_HWCAP) & PPC_FEATURE_HAS_ALTIVEC)
 Package: yes
 Description:
  AltiVec is a single-precision floating point and integer SIMD instruction
@@ -231,9 +235,10 @@ Description:
 # Thus, let's use SIGILL instead.
 
 Name: neon
-Architecture: armhf
-CFLAGS: -mfpu=neon
-Test: asm volatile("VMUL.I16 q0,q0,q1");
+Architecture: any-arm
+Test: return !(getauxval(AT_HWCAP) & HWCAP_ARM_NEON)
+qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu cortex-a7,neon=true,vfp-d32=true
+qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu cortex-a7,neon=false,vfp-d32=false
 Package: yes
 Description:
  This is a mostly dummy package which checks for Neon and refuses to install
@@ -248,8 +253,8 @@ Description:
 Name: ARMv6
 Architecture: armel
 Test: return !need_armv_version(6);
-#qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu arm1026
-#qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu arm1136-r2
+qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu arm1026
+qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu arm1136-r2
 Package: yes
 Priority: 6000
 Description:
@@ -269,8 +274,8 @@ Name: ARMv6K
 Architecture: armel
 Priority: 6900
 Test: return !(need_armv_version(6) && (getauxval(AT_HWCAP) & HWCAP_ARM_TLS));
-#qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu arm1136
-#qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu arm1136-r2
+qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu arm1136
+qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu arm1136-r2
 Package: yes
 Description:
  ARMv6k is a subarchitecture of ARMV6 adding Symmetric MultiProcessing
@@ -282,8 +287,8 @@ Description:
 Name: ARMv7
 Architecture: armel
 Test: return !need_armv_version(7);
-#qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu arm1136
-#qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu cortex-a7
+qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu arm1136
+qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu cortex-a7
 Priority: 7000
 Package: yes
 Description:
@@ -295,22 +300,42 @@ Description:
  processors. Boards include the Raspberry Pi 2.
 
 Name: ARMv8
-Architecture: armel armhf
+Architecture: any-arm
 Test: return !need_armv_version(8);
+qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu max
+qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu cortex-a7
 Package: yes
 Priority: 8000
 Description:
+ ARMv8 (not to be confused with product family ARM8) introduced a large
+ number of ISA enhancements. It is not guaranteed by the architecture
+ baseline on debian any-arm (armel, armhf), but is available for newer
+ ARM machines (including CPUs that support armhf) since the Cortex-A
+ product family, including Cortex-A32, as well as all arm64 processors.
+ Boards include the Raspberry Pi 3 and 4.
+
+Name: arm64-baseline
+Architecture: any-arm
+Test: return !need_armv_version(8);
+qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu max
+qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu cortex-a7
+Package: no
+Priority: 8000
+Description:
+ This test the arm64 debian architecture baseline.
+ .
  ARMv8 (not to be confused with product family ARM8) introduced a large
  number of ISA enhancements. It is not guaranteed by the architecture
  baseline, but is available for newer armel machines (including CPUs that
  support armhf) since the Cortex-A product family, including Cortex-A32, as
  well as all arm64 processors. Boards include the Raspberry Pi 3 and 4.
 
+
 Name: VFP
 Architecture: armel
 Test: return !(getauxval(AT_HWCAP) & HWCAP_ARM_VFP)
-#qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu arm926
-#qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu arm1136
+qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu arm926
+qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu arm1136
 Package: yes
 Description:
  VFP (Vector Floating Point) technology is a floating-point unit (FPU)
@@ -321,8 +346,8 @@ Description:
 Name: VFPv2
 Architecture: armel
 Test: return !(need_armv_version(5) && (getauxval(AT_HWCAP) & HWCAP_ARM_VFP))
-#qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu arm926
-#qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu arm1136
+qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu arm926
+qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu arm1136
 Package: yes
 Description:
  VFP (Vector Floating Point) technology is a floating-point unit (FPU)
@@ -336,8 +361,8 @@ Description:
 Name: VFPv3
 Architecture: armel
 Test: return !(getauxval(AT_HWCAP) & HWCAP_ARM_VFPv3)
-#qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu arm1136
-#qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU""$QEMU_EXTRA" -cpu cortex-a8
+qemu-bad: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu arm1136
+qemu-good: "qemu-$DEB_HOST_MULTIARCH_CPU" -cpu cortex-a8
 Package: yes
 Description:
  VFP (Vector Floating Point) technology is a floating-point unit (FPU)
@@ -349,3 +374,21 @@ Description:
  convert between scalar, float, and double, and adds immediate mode to VMOV,
  allowing constants to be loaded into FPU registers. It is available on most
  Cortex-A8 and -A9 ARMv7 processors.
+
+Name: ARMv8CRC
+Architecture: any-arm arm64
+Test: /* flags are different between 32 bits and 64 bits */
+ do {
+  #if defined(__aarch64__)
+   return !(getauxval(AT_HWCAP) &  HWCAP_CRC32);
+ #else
+   return !(getauxval(AT_HWCAP2) & HWCAP2_CRC32);
+ #endif
+ } while(0)
+Package:yes
+Description:
+ CRC32 instruction performs a cyclic redundancy check
+ (CRC) calculation on a value held in a general-purpose
+ register.
+ .
+ It is available on most ARMv8 processor.

@@ -18,7 +18,7 @@ ISAS:= $(shell cat isa-list | grep -A1 ^Name  | grep -B1 $(ISAS_ARCH_FORUS_GREP)
 
 
 TEST_BINARIES = $(foreach isa,$(ISAS),test-$(isa))
-QEMU_BINARIES = $(foreach type,good static-good bad static-bad,$(foreach isa,$(ISAS),qemu-$(type)-$(isa)))
+QEMU_BINARIES = $(foreach type,good bad,$(foreach isa,$(ISAS),qemu-$(type)-$(isa)))
 TEST_SOURCES = $(foreach isa,$(ISAS),test-$(isa).c)
 
 GENERATED_FILES += $(foreach isa,$(ISAS),debian/$(isa).docs)
@@ -47,6 +47,17 @@ install:
 	mkdir -p $(DESTDIR)/$(archlibexecdir)/isa-support
 	for bin in $(TEST_BINARIES); do $(INSTALL) $$bin $(DESTDIR)/$(archlibexecdir)/isa-support; done
 	for bin in $(QEMU_BINARIES); do if test -e $$bin; then $(INSTALL) $$bin $(DESTDIR)/$(archlibexecdir)/isa-support; fi; done
+
+check:
+	set -e ;for isa in $(ISAS); do \
+		if test -e qemu-good-$$isa; then \
+			echo "Test $$isa"; \
+			echo "Test good"; \
+			sh ./qemu-good-$$isa ./test-$$isa && echo 'ok'; \
+			echo "Test bad"; \
+			sh ./qemu-bad-$$isa ./test-$$isa || echo 'ok'; \
+		fi; \
+	done;
 
 refresh: $(ALL_GENERATED_FILES) $(TEST_SOURCES)
 	@:
