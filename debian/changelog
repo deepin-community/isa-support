@@ -1,3 +1,9 @@
+isa-support (27deepin1) unstable; urgency=medium
+
+  * Rebuild with LTO enabled (dpkg vendor feature optimize/lto).
+
+ -- tunaichao <tunaichao@uniontech.com>  Mon, 21 Sep 2026 14:58:19 +0800
+
 isa-support (27) unstable; urgency=medium
 
   * Bug fix: "Update/add debconf template translation [INTL:ca]", thanks
