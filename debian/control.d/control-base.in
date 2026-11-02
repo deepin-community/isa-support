@@ -12,7 +12,11 @@ Package: isa-support
 Multi-Arch: same
 Architecture: @ALL_ARCHITECTURES@
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Breaks: qemu-user (<< 1:9.1.0+ds-8~)
+# The qemu CPU models used by isa-list (Conroe/Penryn/Nehalem-IBRS/pentium2-v1,
+# cortex-a7 with explicit neon/vfp-d32 flags, ...) are supported since
+# qemu 8.2.0; relax the lower bound from 1:9.1.0+ds-8~ to the version shipped
+# by deepin so that isa-support does not force removal of qemu-user.
+Breaks: qemu-user (<< 1:8.2.0+ds-1~)
 Description: CPU feature checking - common back-end
  The packages in the isa-support family probe for microprocessor Instruction
  Set Architecture features such as SSE3. By refusing to install on machines

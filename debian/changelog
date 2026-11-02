@@ -1,3 +1,19 @@
+isa-support (27deepin2) unstable; urgency=medium
+
+  * Relax Breaks on qemu-user from 1:9.1.0+ds-8~ to 1:8.2.0+ds-1~
+    - deepin ships qemu 1:8.2.0+ds-1deepin23, lower than the upstream
+      bound, so installing qemu-user made apt remove isa-support and
+      transitively sse3-support, libqt6webenginecore6 and everything
+      depending on it (deepin-mail, deepin-manual, deepin-reader,
+      deepin-unioncode, uos-ai, deepin-deepinid-client, deepin-app-store
+      and both deepin-desktop-environment-* metapackages)
+    - the qemu CPU models used by isa-list are all supported by qemu
+      8.2.0 and the good/bad probes return the expected results, so the
+      upstream lower bound was stricter than the code actually needs
+    - lower the autopkgtest dependency on qemu-user to the same version
+
+ -- lichenggang <lichenggang@uniontech.com>  Mon, 02 Nov 2026 10:35:32 +0800
+
 isa-support (27deepin1) unstable; urgency=medium
 
   * Rebuild with LTO enabled (dpkg vendor feature optimize/lto).
